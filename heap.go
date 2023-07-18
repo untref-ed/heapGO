@@ -67,7 +67,7 @@ func (h *Heap[T]) upHeap(i int) {
 		return
 	}
 	padre := (i - 1) / 2
-	if h.comp(h.heap[i], h.heap[padre])*h.min == 1 {
+	if h.comp(h.heap[i], h.heap[padre])*h.min >= 1 {
 		h.heap[i], h.heap[padre] = h.heap[padre], h.heap[i]
 		h.upHeap(padre)
 	}
@@ -79,13 +79,18 @@ func (h *Heap[T]) downHeap(i int) {
 	if hi >= len(h.heap) {
 		return
 	}
-	if hi+1 < len(h.heap) && h.comp(h.heap[hi+1], h.heap[hi])*h.min == 1 {
+	if hi+1 < len(h.heap) && h.comp(h.heap[hi+1], h.heap[hi])*h.min >= 1 {
 		hi++
 	}
-	if h.comp(h.heap[hi], h.heap[i])*h.min == 1 {
+	if h.comp(h.heap[hi], h.heap[i])*h.min >= 1 {
 		h.heap[i], h.heap[hi] = h.heap[hi], h.heap[i]
 		h.downHeap(hi)
 	}
+}
+
+// EstaVacio devuelve true si el Heap está vacío.
+func (h *Heap[T]) EstaVacio() bool {
+	return len(h.heap) == 0
 }
 
 // Devuelve una cadena con la representación del Heap
