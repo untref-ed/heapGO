@@ -7,7 +7,6 @@ import (
 // Heap es una estructura de datos que permite almacenar elementos
 // y recuperarlos en orden de prioridad.
 // Soporta Heap Min y Heap Max.
-// Tipo de dato genérico.
 type Heap[T any] struct {
 	// Arreglo de elementos
 	heap []T
@@ -21,9 +20,10 @@ type Heap[T any] struct {
 // Constructor interno
 func nuevoHeap[T any](comp func(T, T) int, min int) *Heap[T] {
 	h := new(Heap[T])
-	h.heap = make([]T, 0)
+
 	h.comp = comp
 	h.min = min
+
 	return h
 }
 
@@ -50,14 +50,17 @@ func (h *Heap[T]) Insertar(e T) {
 // Extraer devuelve el elemento de mayor prioridad y lo elimina del Heap.
 // Si el Heap está vacío, devuelve un error.
 func (h *Heap[T]) Extraer() (T, error) {
-	var nulo T
-	if len(h.heap) == 0 {
+	if h.EstaVacio() {
+		var nulo T
 		return nulo, fmt.Errorf("Heap vacío")
 	}
+
 	e := h.heap[0]
 	h.heap[0] = h.heap[len(h.heap)-1]
 	h.heap = h.heap[:len(h.heap)-1]
+
 	h.downHeap(0)
+
 	return e, nil
 }
 
@@ -66,7 +69,9 @@ func (h *Heap[T]) upHeap(i int) {
 	if i == 0 {
 		return
 	}
+
 	padre := (i - 1) / 2
+
 	if h.comp(h.heap[i], h.heap[padre])*h.min >= 1 {
 		h.heap[i], h.heap[padre] = h.heap[padre], h.heap[i]
 		h.upHeap(padre)
@@ -76,12 +81,15 @@ func (h *Heap[T]) upHeap(i int) {
 // downHeap baja un elemento en el Heap hasta que se cumpla la propiedad de orden.
 func (h *Heap[T]) downHeap(i int) {
 	hi := 2*i + 1
+
 	if hi >= len(h.heap) {
 		return
 	}
+
 	if hi+1 < len(h.heap) && h.comp(h.heap[hi+1], h.heap[hi])*h.min >= 1 {
 		hi++
 	}
+
 	if h.comp(h.heap[hi], h.heap[i])*h.min >= 1 {
 		h.heap[i], h.heap[hi] = h.heap[hi], h.heap[i]
 		h.downHeap(hi)
